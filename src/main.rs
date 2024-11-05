@@ -6,8 +6,14 @@ use rcli::{
 
 fn main() -> anyhow::Result<()> {
     let args = Opts::parse();
+    println!("{:?}", args);
     match args.command {
-        SubCommand::Csv(opts) => process_csv(&opts.input, &opts.output)?,
+        SubCommand::Csv(opts) => {
+            let output = opts
+                .output
+                .unwrap_or_else(|| format!("output.{}", opts.format));
+            process_csv(&opts.input, &output, opts.format)?
+        }
     }
     Ok(())
 }
