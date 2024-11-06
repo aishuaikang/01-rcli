@@ -20,7 +20,7 @@ use crate::opts::OutputFormat;
 //     kit_number: u8,
 // }
 
-pub fn process_csv(input: &str, output: &str, _format: OutputFormat) -> anyhow::Result<()> {
+pub fn process_csv(input: &str, output: &str, format: OutputFormat) -> anyhow::Result<()> {
     let mut reader = Reader::from_path(input)?;
     let headers = reader.headers()?.clone();
     let mut result = Vec::with_capacity(headers.len());
@@ -29,7 +29,12 @@ pub fn process_csv(input: &str, output: &str, _format: OutputFormat) -> anyhow::
         let json = headers.iter().zip(record.iter()).collect::<Value>();
         result.push(json);
     }
-    let json = serde_json::to_string_pretty(&result)?;
-    fs::write(output, json)?;
+
+    let content = match format {
+        OutputFormat::Json => serde_json::to_string_pretty(&result)?,
+        OutputFormat::Yaml => serde_yaml::to_string(&result)?,
+        // OutputFormat::Toml => todo!(),
+    };
+    fs::write(output, content)?;
     Ok(())
 }

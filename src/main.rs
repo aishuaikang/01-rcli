@@ -6,7 +6,6 @@ use rcli::{
 
 fn main() -> anyhow::Result<()> {
     let args = Opts::parse();
-    println!("{:?}", args);
     match args.command {
         SubCommand::Csv(opts) => {
             let output = opts

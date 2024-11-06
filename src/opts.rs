@@ -18,7 +18,7 @@ pub enum SubCommand {
 pub enum OutputFormat {
     Json,
     Yaml,
-    Toml,
+    // Toml,
 }
 
 impl Display for OutputFormat {
@@ -32,7 +32,7 @@ pub struct CsvOpts {
     pub input: String,
     #[arg(short, long)]
     pub output: Option<String>,
-    #[arg(short, long, default_value = "json")]
+    #[arg(long, default_value = "json")]
     pub format: OutputFormat,
     #[arg(short, long, default_value_t = ',')]
     pub delimiter: char,
@@ -57,7 +57,7 @@ impl From<OutputFormat> for &'static str {
         match value {
             OutputFormat::Json => "json",
             OutputFormat::Yaml => "yaml",
-            OutputFormat::Toml => "toml",
+            // OutputFormat::Toml => "toml",
         }
     }
 }
@@ -67,7 +67,7 @@ impl From<&str> for OutputFormat {
         match value.to_lowercase().as_str() {
             "json" => OutputFormat::Json,
             "yaml" => OutputFormat::Yaml,
-            "toml" => OutputFormat::Toml,
+            // "toml" => OutputFormat::Toml,
             _ => unreachable!(),
         }
     }
