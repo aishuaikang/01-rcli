@@ -62,7 +62,10 @@ pub fn process_gen_pass(
     println!("{}", password);
 
     let password_strength = zxcvbn(&password, &[]);
-    eprintln!("{:?}", Into::<u8>::into(password_strength.score()));
+    eprintln!(
+        "密码强度：{:?}(max 4)",
+        Into::<u8>::into(password_strength.score())
+    );
 
     Ok(())
 }
