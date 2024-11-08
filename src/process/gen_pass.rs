@@ -1,5 +1,4 @@
 use rand::seq::SliceRandom;
-use zxcvbn::zxcvbn;
 
 static LOWERCASE: &[u8] = b"abcdefghijkmnopqrstuvwxyz";
 static UPPERCASE: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -12,7 +11,7 @@ pub fn process_gen_pass(
     uppercase: bool,
     number: bool,
     symbol: bool,
-) -> anyhow::Result<()> {
+) -> anyhow::Result<String> {
     let mut rng = rand::thread_rng();
     let mut password = Vec::new();
     let mut chars = Vec::new();
@@ -59,13 +58,6 @@ pub fn process_gen_pass(
     password.shuffle(&mut rng);
 
     let password = String::from_utf8(password)?;
-    println!("{}", password);
 
-    let password_strength = zxcvbn(&password, &[]);
-    eprintln!(
-        "密码强度：{:?}(max 4)",
-        Into::<u8>::into(password_strength.score())
-    );
-
-    Ok(())
+    Ok(password)
 }
