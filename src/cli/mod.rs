@@ -9,9 +9,10 @@ use std::path::{Path, PathBuf};
 use base64::Base64SubCommand;
 use clap::{Parser, Subcommand};
 use csv::CsvOpts;
+use enum_dispatch::enum_dispatch;
 use gen_pass::GenPassOpts;
 
-use crate::CmdExector;
+// use crate::CmdExector;
 
 #[derive(Debug, Parser)]
 #[command(version, about = "一个处理CSV文件的工具")]
@@ -21,6 +22,7 @@ pub struct Opts {
 }
 
 #[derive(Debug, Subcommand)]
+#[enum_dispatch(CmdExector)]
 pub enum SubCommand {
     #[command(about = "显示CSV，或将它转换为其他格式")]
     Csv(CsvOpts),
@@ -34,17 +36,17 @@ pub enum SubCommand {
     Http(http::HttpSubCommand),
 }
 
-impl CmdExector for SubCommand {
-    async fn execute(&self) -> anyhow::Result<()> {
-        match self {
-            SubCommand::Csv(opts) => opts.execute().await,
-            SubCommand::GenPass(opts) => opts.execute().await,
-            SubCommand::Base64(sub_command) => sub_command.execute().await,
-            SubCommand::Text(sub_command) => sub_command.execute().await,
-            SubCommand::Http(sub_command) => sub_command.execute().await,
-        }
-    }
-}
+// impl CmdExector for SubCommand {
+//     async fn execute(&self) -> anyhow::Result<()> {
+//         match self {
+//             SubCommand::Csv(opts) => opts.execute().await,
+//             SubCommand::GenPass(opts) => opts.execute().await,
+//             SubCommand::Base64(sub_command) => sub_command.execute().await,
+//             SubCommand::Text(sub_command) => sub_command.execute().await,
+//             SubCommand::Http(sub_command) => sub_command.execute().await,
+//         }
+//     }
+// }
 
 fn verify_file(filepath: &str) -> anyhow::Result<String> {
     if filepath == "-" || Path::new(filepath).exists() {

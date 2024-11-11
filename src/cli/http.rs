@@ -1,24 +1,26 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
+use enum_dispatch::enum_dispatch;
 
 use crate::{process::http::process_http, CmdExector};
 
 use super::verify_path;
 
 #[derive(Debug, Subcommand)]
+#[enum_dispatch(CmdExector)]
 pub enum HttpSubCommand {
     #[command(about = "通过HTTP服务文件")]
     Serve(HttpServeOpts),
 }
 
-impl CmdExector for HttpSubCommand {
-    async fn execute(&self) -> anyhow::Result<()> {
-        match self {
-            HttpSubCommand::Serve(opts) => opts.execute().await,
-        }
-    }
-}
+// impl CmdExector for HttpSubCommand {
+//     async fn execute(&self) -> anyhow::Result<()> {
+//         match self {
+//             HttpSubCommand::Serve(opts) => opts.execute().await,
+//         }
+//     }
+// }
 
 #[derive(Debug, Parser)]
 pub struct HttpServeOpts {
