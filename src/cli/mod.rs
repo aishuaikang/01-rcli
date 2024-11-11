@@ -11,6 +11,8 @@ use clap::{Parser, Subcommand};
 use csv::CsvOpts;
 use gen_pass::GenPassOpts;
 
+use crate::CmdExector;
+
 #[derive(Debug, Parser)]
 #[command(version, about = "一个处理CSV文件的工具")]
 pub struct Opts {
@@ -22,7 +24,7 @@ pub struct Opts {
 pub enum SubCommand {
     #[command(about = "显示CSV，或将它转换为其他格式")]
     Csv(CsvOpts),
-    #[command(about = "生成密码")]
+    #[command(about = "随机生成密码")]
     GenPass(GenPassOpts),
     #[command(subcommand, about = "Base64编码或解码")]
     Base64(Base64SubCommand),
@@ -30,6 +32,18 @@ pub enum SubCommand {
     Text(text::TextSubCommand),
     #[command(subcommand, about = "通过HTTP服务文件")]
     Http(http::HttpSubCommand),
+}
+
+impl CmdExector for SubCommand {
+    async fn execute(&self) -> anyhow::Result<()> {
+        match self {
+            SubCommand::Csv(opts) => opts.execute().await,
+            SubCommand::GenPass(opts) => opts.execute().await,
+            SubCommand::Base64(sub_command) => sub_command.execute().await,
+            SubCommand::Text(sub_command) => sub_command.execute().await,
+            SubCommand::Http(sub_command) => sub_command.execute().await,
+        }
+    }
 }
 
 fn verify_file(filepath: &str) -> anyhow::Result<String> {
