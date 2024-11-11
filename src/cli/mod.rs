@@ -1,6 +1,7 @@
 pub mod base64;
 pub mod csv;
 pub mod gen_pass;
+pub mod http;
 pub mod text;
 
 use std::path::{Path, PathBuf};
@@ -27,6 +28,8 @@ pub enum SubCommand {
     Base64(Base64SubCommand),
     #[command(subcommand, about = "文本签名或验证")]
     Text(text::TextSubCommand),
+    #[command(subcommand, about = "通过HTTP服务文件")]
+    Http(http::HttpSubCommand),
 }
 
 fn verify_file(filepath: &str) -> anyhow::Result<String> {

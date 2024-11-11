@@ -4,6 +4,7 @@ use clap::Parser;
 use rcli::{
     cli::{
         base64::Base64SubCommand,
+        http::HttpSubCommand,
         text::{TextSignFormat, TextSubCommand},
         Opts, SubCommand,
     },
@@ -11,12 +12,15 @@ use rcli::{
         base64::{process_decode, process_encode},
         csv::process_csv,
         gen_pass::process_gen_pass,
+        http::process_http,
         text::{process_decrypt, process_encrypt, process_gen_key, process_sign, process_verify},
     },
 };
 use zxcvbn::zxcvbn;
 
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
     let args = Opts::parse();
     match args.command {
         SubCommand::Csv(opts) => {
@@ -85,6 +89,11 @@ fn main() -> anyhow::Result<()> {
             TextSubCommand::Decrypt(opts) => {
                 let decrypted = process_decrypt(&opts.input, &opts.key)?;
                 println!("{}", decrypted);
+            }
+        },
+        SubCommand::Http(sub_command) => match sub_command {
+            HttpSubCommand::Serve(opts) => {
+                process_http(opts.dir, opts.port).await?;
             }
         },
     }
