@@ -2,6 +2,7 @@ pub mod base64;
 pub mod csv;
 pub mod gen_pass;
 pub mod http;
+pub mod jwt;
 pub mod text;
 
 use std::path::{Path, PathBuf};
@@ -34,6 +35,8 @@ pub enum SubCommand {
     Text(text::TextSubCommand),
     #[command(subcommand, about = "通过HTTP服务文件")]
     Http(http::HttpSubCommand),
+    #[command(subcommand, about = "JWT签名或验证")]
+    Jwt(jwt::JwtSubCommand),
 }
 
 // impl CmdExector for SubCommand {

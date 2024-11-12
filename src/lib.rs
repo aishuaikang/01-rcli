@@ -9,6 +9,7 @@ use cli::{
     csv::*,
     gen_pass::*,
     http::{self, *},
+    jwt::{self, *},
     text::{self, *},
     SubCommand,
 };
